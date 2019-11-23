@@ -26,11 +26,7 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
 
-    fun login(username: String, password: String) {
-        // can be launched in a separate asynchronous job
-        aleatorio()
 
-    }
 
     fun loginDataChanged(username: String, password: String) {
         if (!isUserNameValid(username)) {
@@ -56,7 +52,7 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
         return password.length > 5
     }
 
-    private fun aleatorio(){
+    fun login(username: String, password: String)  {
 
         val service = Retrofit.Builder()
             .baseUrl("http://10.0.2.2:8081/")
@@ -64,14 +60,15 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
             .build()
             .create(Api::class.java)
 
-        service.login(LoginParameters("INVALID","INVALID"))
+        service.login(LoginParameters(username, password))
             .enqueue(object : Callback<Login> {
                 override fun onResponse(call: Call<Login>, response: Response<Login>) {
 
-                   if(response.isSuccessful)
-                       home()
-                    else
+                    if (response.isSuccessful) {
 
+                    }
+                    else
+                        notOk()
 
                 }
 
@@ -82,7 +79,9 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     }
 
 
-    private fun home(){
+
+
+    private fun notOk() {
 
     }
 

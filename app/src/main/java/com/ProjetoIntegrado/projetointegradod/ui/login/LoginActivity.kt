@@ -16,6 +16,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 
 import com.ProjetoIntegrado.projetointegradod.R
+import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
 
@@ -95,6 +96,13 @@ class LoginActivity : AppCompatActivity() {
                 loginViewModel.login(username.text.toString(), password.text.toString())
             }
         }
+    }
+
+    fun AfterLogin(){
+        loading.visibility= View.INVISIBLE
+
+
+
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {

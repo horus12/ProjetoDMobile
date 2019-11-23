@@ -1,5 +1,6 @@
 package com.ProjetoIntegrado.projetointegradod.ui.login
 
+import android.app.AlertDialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,14 @@ import com.ProjetoIntegrado.projetointegradod.data.LoginRepository
 import com.ProjetoIntegrado.projetointegradod.data.Result
 
 import com.ProjetoIntegrado.projetointegradod.R
+import com.projetointegrado.projetointegradoFinal.Api
+import com.projetointegrado.projetointegradoFinal.Login
+import com.projetointegrado.projetointegradoFinal.LoginParameters
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
@@ -19,14 +28,8 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
 
     fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
+        aleatorio()
 
-        if (result is Result.Success) {
-            _loginResult.value =
-                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
-        } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
-        }
     }
 
     fun loginDataChanged(username: String, password: String) {
@@ -52,4 +55,36 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     private fun isPasswordValid(password: String): Boolean {
         return password.length > 5
     }
+
+    private fun aleatorio(){
+
+        val service = Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8081/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(Api::class.java)
+
+        service.login(LoginParameters("INVALID","INVALID"))
+            .enqueue(object : Callback<Login> {
+                override fun onResponse(call: Call<Login>, response: Response<Login>) {
+
+                   if(response.isSuccessful)
+                       home()
+                    else
+
+
+                }
+
+                override fun onFailure(call: Call<Login>, t: Throwable) {
+                }
+            })
+
+    }
+
+
+    private fun home(){
+
+    }
+
+
 }
